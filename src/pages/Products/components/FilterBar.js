@@ -1,4 +1,11 @@
-export const FilterBar = ({show,setShow}) => {
+import { setOnlyStock , setBestSellerOnly , applyFilters, setRating , clearFilter } from "../../../store/filterSlice"
+import { useDispatch,useSelector } from "react-redux"
+export const FilterBar = ({show,setShow,products}) => {
+  const dispatch = useDispatch()
+  const bestSellerOnly = useSelector(state=>state.filterState.bestSellerOnly)
+  const onlyInStock = useSelector(state=> state.filterState.onlyInStock )
+  const ratingSelctor = useSelector(state=>state.filterState.ratings)
+  const priceSelector = useSelector(state=>state.filterState.priceSort)
     return (
       <section className="filter">
           <div id="drawer-disable-body-scrolling" className={`fixed z-40 h-screen p-5 overflow-y-auto bg-white w-72 dark:bg-gray-800 transition-transhtmlForm left-0 top-0 transhtmlForm-none`} tabIndex="-1" aria-labelledby="drawer-disable-body-scrolling-label" aria-modal="true" role="dialog">
@@ -13,46 +20,46 @@ export const FilterBar = ({show,setShow}) => {
                     <li className="mt-1 mb-5">
                       <p className="font-semibold my-1">Sort by</p>                      
                       <div className="flex items-center my-1">
-                          <input id="price-sort-1" type="radio" value="" name="price-sort" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:bg-gray-700 dark:border-gray-600" />
+                          <input id="price-sort-1" type="radio" onChange={()=>dispatch(applyFilters({ priceSort:"lowToHigh" }))}  checked={priceSelector === "lowToHigh" || false} value="" name="price-sort" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:bg-gray-700 dark:border-gray-600" />
                           <label htmlFor="price-sort-1" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Price - Low to High</label>
                       </div>
                       <div className="flex items-center my-1">
-                          <input id="price-sort-2" type="radio" value="" name="price-sort" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:bg-gray-700 dark:border-gray-600" />
+                          <input id="price-sort-2" type="radio" value="" onChange={()=>dispatch(applyFilters({ priceSort:"highToLow" }))} checked={priceSelector === "highToLow" || false} name="price-sort" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:bg-gray-700 dark:border-gray-600" />
                           <label htmlFor="price-sort-2" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Price - High to Low</label>
                       </div>
                     </li>
                     <li className="mt-1 mb-5">
                       <span className="font-semibold">Rating</span>
                       <div className="flex items-center my-1">
-                          <input id="rating-sort-1" type="radio" value="" name="rating-sort" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:bg-gray-700 dark:border-gray-600" />
+                          <input id="rating-sort-1" type="radio" value="" onChange={()=>dispatch(setRating({rating:"4star"}))} checked={ratingSelctor === "4star" || false} name="rating-sort" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:bg-gray-700 dark:border-gray-600" />
                           <label htmlFor="rating-sort-1" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">4 Stars & Above</label>
                       </div>
                       <div className="flex items-center my-1">
-                          <input id="rating-sort-2" type="radio" value="" name="rating-sort" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:bg-gray-700 dark:border-gray-600" />
+                          <input id="rating-sort-2" type="radio" value="" onChange={()=>dispatch(setRating({rating:"3star"}))} checked={ratingSelctor === "3star" || false} name="rating-sort" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:bg-gray-700 dark:border-gray-600" />
                           <label htmlFor="rating-sort-2" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">3 Stars & Above</label>
                       </div>
                       <div className="flex items-center my-1">
-                          <input id="rating-sort-3" type="radio" value="" name="rating-sort" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:bg-gray-700 dark:border-gray-600" />
+                          <input id="rating-sort-3" type="radio" value="" onChange={()=>dispatch(setRating({rating:"2star"}))} checked={ratingSelctor === "2star" || false} name="rating-sort" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:bg-gray-700 dark:border-gray-600" />
                           <label htmlFor="rating-sort-3" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">2 Stars & Above</label>
                       </div>
                       <div className="flex items-center my-1">
-                          <input id="rating-sort-4" type="radio" value="" name="rating-sort" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:bg-gray-700 dark:border-gray-600" />
+                          <input id="rating-sort-4" type="radio" value="" onChange={()=>dispatch(setRating({rating:"1star"}))} checked={ratingSelctor === "1star" || false} name="rating-sort" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 dark:bg-gray-700 dark:border-gray-600" />
                           <label htmlFor="rating-sort-4" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">1 Stars & Above</label>
                       </div>
                     </li>
                     <li className="mt-1 mb-5">
                       <span className="font-semibold">Other Filters</span>
                       <div className="flex items-center my-1">
-                          <input id="best-seller" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 dark:bg-gray-700 dark:border-gray-600" />
+                          <input id="best-seller" type="checkbox" value="" checked={bestSellerOnly} onChange={()=>dispatch(setBestSellerOnly())} className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 dark:bg-gray-700 dark:border-gray-600" />
                           <label htmlFor="best-seller" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Best Seller Only</label>
                       </div>
                       <div className="flex items-center my-1">
-                          <input id="only-instock" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 dark:bg-gray-700 dark:border-gray-600" />
+                          <input id="only-instock" type="checkbox" value="" checked={onlyInStock} onChange={()=>dispatch(setOnlyStock())} className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 dark:bg-gray-700 dark:border-gray-600" />
                           <label htmlFor="only-instock" className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">INSTOCK Only</label>
                       </div>
                     </li>
                     <li className="mt-1 mb-5 px-1">
-                      <button type="button" className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-10 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">Clear Filter</button>
+                      <button type="button" onClick={()=>dispatch(clearFilter())}  className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-10 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">Clear Filter</button>
                     </li>
                   </ul>
               </div>
